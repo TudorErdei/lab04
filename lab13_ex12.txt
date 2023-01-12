@@ -1,0 +1,132 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char* argv[]) {
+    if(argc != 3) {
+        printf("Usage: %s <input file> <output file>\n", argv[0]);
+        return 1;
+    }
+
+    FILE* input = fopen(argv[1], "wb");
+    if(input == NULL) {
+        printf("Error opening input file.\n");
+        return 1;
+    }
+
+    int numbers[8];
+    for(int i = 0; i < 8; i++) {
+        printf("Enter a number: ");
+        scanf("%d", &numbers[i]);
+    }
+
+    fwrite(numbers, sizeof(int), 8, input);
+    fclose(input);
+
+    FILE* output = fopen(argv[2], "w");
+    if(output == NULL) {
+        printf("Error opening output file.\n");
+        return 1;
+    }
+
+    input = fopen(argv[1], "rb");
+    if(input == NULL) {
+        printf("Error opening input file.\n");
+        return 1;
+    }
+
+    fread(numbers, sizeof(int), 8, input);
+    fclose(input);
+
+    int sum = 0, count = 0;
+    for(int i = 0; i < 8; i++) {
+        if(numbers[i] > 4) {
+            sum += numbers[i];
+            count++;
+        }
+    }
+
+    if(count == 0) {
+        fprintf(output, "No numbers greater than 4 were found.\n");
+    } else {
+        double avg = (double)sum / count;
+        fprintf(output, "Media aritmetica a numerelor mai mari decat 4, este: %.2f", avg);
+    }
+
+    fclose(output);
+    return 0;
+}
+
+// ------------------------------------------------------------------------------------ //
+
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char* argv[]) {
+	if (argc != 3) {
+		printf("Nu ati introdus numele fisierelor in linia de comanda!");
+		return 1;
+	}
+
+	FILE* fp, * fp2;
+	int tab[8], rest, cifmax = 0;
+
+	fp = fopen(argv[1], "wb");
+
+	if (fp == NULL) {
+		printf("Eroare la deschiderea fisierului!");
+		exit(1);
+	}
+
+	printf("Introduceti 8 numere intregi care vor fi scrise in primul fisier: ");
+	for (int i = 0; i < 8; i++)
+		scanf("%d", &tab[i]);
+
+	fwrite(&tab, sizeof(int), 8, fp);
+	printf("\nNumerele au fost inserate cu succes in fisierul %s!", argv[1]);
+
+	fclose(fp);
+
+	fp = fopen(argv[1], "rb");
+
+	if (fp == NULL) {
+		printf("Eroare la deschiderea fisierului!");
+		exit(1);
+	}
+
+	fp2 = fopen(argv[2], "w");
+
+	if (fp2 == NULL) {
+		printf("Eroare la deschiderea fisierului!");
+		exit(1);
+	}
+
+	fread(tab, sizeof(int), 8, fp);
+	fclose(fp);
+
+	int sum = 0, cnt = 0;
+
+	for (int i = 0; i < 8; i++) {
+		if (tab[i] > 4) {
+			sum += tab[i];
+			cnt++;
+		}
+	}
+
+	if (cnt == 0)
+		fprintf(fp2, "Nu s-au gasit numere mai mari decat 4!");
+	else {
+		float medAritm = (float)sum / cnt;
+		fprintf(fp2, "Media arimetica a numerelor ");
+
+		for (int i = 0; i < cnt; i++)
+			fprintf(fp2, "%d ", tab[i]);
+
+			fprintf(fp2, "este %.2f", medAritm);
+		}
+
+	fclose(fp2);
+
+	return 0;
+}
